@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilitário de Números</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Utilitário de Números</h1>
+        
+        <div class="input-group">
+            <label for="numbers">Digite os números (separados por vírgula):</label>
+            <input type="text" id="numbers" placeholder="Ex: 10, 1, 100" value="10, 1, 100">
+        </div>
+
+        <div class="buttons">
+            <button onclick="processNumbers('minimum')">Encontrar Mínimo</button>
+            <button onclick="processNumbers('maximum')">Encontrar Máximo</button>
+        </div>
+
+        <div class="result" id="result">
+            <h3>Resultado:</h3>
+            <p id="numbersEntered"></p>
+            <p id="processedResult"></p>
+        </div>
+    </div>
+
+    <script>
+        async function processNumbers(action) {
+            const numbers = document.getElementById('numbers').value;
+            const numbersEnteredElement = document.getElementById('numbersEntered');
+            const processedResultElement = document.getElementById('processedResult');
+
+            try {
+                const response = await fetch(`http://localhost:3000/number/${action}?numbers=${encodeURIComponent(numbers)}`);
+
+                if (!response.ok) {
+                    throw new Error('Erro na requisição');
+                }
+
+                const data = await response.json();
+                numbersEnteredElement.textContent = `Números informados: ${data.numbers}`;
+                processedResultElement.textContent = `Resultado (${action}): ${data.result}`;
+            } catch (error) {
+                console.error('Erro:', error);
+                processedResultElement.textContent = 'Erro ao processar os números. Verifique se o servidor está rodando.';
+            }
+        }
+    </script>
+</body>
+</html>
